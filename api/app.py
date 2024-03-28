@@ -1,26 +1,34 @@
 from fastapi import FastAPI
+import numpy as np
 import pandas as pd
+from predict import predict_price
 from pydantic import BaseModel
-from api.predict import predict_price, load_preprocessing_steps, apply_preprocessing
+from typing import Optional
 
 # Define input data schema
 class InputData(BaseModel):
     PostalCode: int
+    Region: str
+    District: str
     Province: str
+    PropertyType: str
     PropertySubType: str
     BedroomCount: int
     LivingArea: float
-    KitchenType: str
-    Furnished: int
-    Fireplace: int
-    TerraceArea: float
-    GardenArea: float
-    Facades: int
-    SwimmingPool: int
-    EnergyConsumptionPerSqm: float
-    Condition: str
-    Latitude: float
-    Longitude: float
+    KitchenType: Optional[str] 
+    Furnished: Optional[int]
+    Fireplace: Optional[int]
+    Terrace: int
+    TerraceArea: Optional[float] 
+    Garden: int
+    GardenArea: Optional[float] 
+    Facades: Optional[int] 
+    SwimmingPool: Optional[int]  
+    EnergyConsumptionPerSqm: Optional[float]
+    Condition: Optional[str]
+    EPCScore: Optional[str]
+    Latitude: Optional[float] 
+    Longitude: Optional[float] 
 
 # Define FastAPI app
 app = FastAPI()
@@ -31,12 +39,9 @@ def predict_property_price(data: InputData):
     input_df = pd.DataFrame([data.dict()])
 
     # Load preprocessing steps
-    preprocessing_steps = load_preprocessing_steps("./preprocessing_steps.json")
+    predicted_price = predict_price(input_df)
 
-    # Apply preprocessing steps
-    preprocessed_data = apply_preprocessing(input_df, preprocessing_steps)
+    # Format prediction as currency
+    formatted_prediction = f'€{predicted_price:,.2f}'
 
-    # Make predictions using the loaded model
-    prediction = predict_price(preprocessed_data)
-
-    return {"prediction": round(float(prediction), 2), "status_code": 200}
+    return {"prediction": formatted_prediction, "status_code": 200}
