@@ -146,5 +146,3 @@ if st.button("Submit"):
         st.success(f'Predicted Price: €{prediction}')
     else:
         st.error('Error occurred. Please try again.')
-
-print(epc_energy_map)
