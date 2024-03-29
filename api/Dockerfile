@@ -1,11 +1,10 @@
 # Use the official Python image as a base image
-FROM python:3.9-slim
+FROM python:3.12
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Create a folder "app" at the root of the image
+RUN mkdir /app
 
-# Set the working directory in the container
+# Define /app as the working directory
 WORKDIR /app
 
 # Copy the requirements file to the working directory
