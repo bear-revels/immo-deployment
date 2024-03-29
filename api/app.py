@@ -33,6 +33,11 @@ class InputData(BaseModel):
 # Define FastAPI app
 app = FastAPI()
 
+# Define root endpoint
+@app.get("/")
+def read_root():
+    return {"message": "It's alive!"}
+
 # Define API endpoint for predicting property prices
 @app.post("/predict/")
 def predict_property_price(data: InputData):
