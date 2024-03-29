@@ -80,7 +80,13 @@ else:
 selected_property_type = st.selectbox("Property Type", property_type_options, index=selected_property_type_index)
 if selected_property_type:
     property_subtype_options = raw_data[raw_data['PropertyType'] == selected_property_type]['PropertySubType'].unique()
-    selected_property_subtype = st.selectbox("Property Subtype", [None] + property_subtype_options.tolist(), index=property_subtype_options.tolist().index(default_values["PropertySubType"]))
+    
+    if default_values["PropertySubType"] is not None and default_values["PropertySubType"] in property_subtype_options:
+        selected_property_subtype_index = property_subtype_options.tolist().index(default_values["PropertySubType"])
+    else:
+        selected_property_subtype_index = None
+    
+    selected_property_subtype = st.selectbox("Property Subtype", [None] + property_subtype_options.tolist(), index=selected_property_subtype_index)
 
 selected_kitchen_type = st.selectbox("Kitchen Type", [None] + kitchen_types.tolist(), index=kitchen_types.tolist().index(default_values["KitchenType"]))
 selected_condition = st.selectbox("Condition", [None] + conditions.tolist(), index=conditions.tolist().index(default_values["Condition"]))
