@@ -61,9 +61,11 @@ selected_postal_code = st.selectbox("Postal Code", [None] + postal_codes.tolist(
 # Show region, district, province, latitude, and longitude inputs once postal code is selected
 if selected_postal_code:
     selected_region, selected_district, selected_province = postal_code_map[selected_postal_code]
-    selected_region = region_placeholder.selectbox("Region", [None] + raw_data['Region'].unique().tolist(), index=None if default_values["Region"] is None else raw_data['Region'].unique().tolist().index(selected_region))
-    selected_district = district_placeholder.selectbox("District", [None] + raw_data['District'].unique().tolist(), index=None if default_values["District"] is None else raw_data['District'].unique().tolist().index(selected_district))
-    selected_province = province_placeholder.selectbox("Province", [None] + raw_data['Province'].unique().tolist(), index=None if default_values["Province"] is None else raw_data['Province'].unique().tolist().index(selected_province))
+    
+    # Select region, district, and province
+    selected_region = region_placeholder.write(selected_region)
+    selected_district = district_placeholder.write(selected_district)
+    selected_province = province_placeholder.write(selected_province)
     
     # Fill latitude and longitude with median values
     median_latitude, median_longitude = raw_data[raw_data['PostalCode'] == selected_postal_code][['Latitude', 'Longitude']].median()
