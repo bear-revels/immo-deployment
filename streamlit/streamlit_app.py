@@ -64,9 +64,12 @@ if selected_postal_code:
     selected_region = region_placeholder.selectbox("Region", [None] + raw_data['Region'].unique().tolist(), index=None if default_values["Region"] is None else raw_data['Region'].unique().tolist().index(selected_region))
     selected_district = district_placeholder.selectbox("District", [None] + raw_data['District'].unique().tolist(), index=None if default_values["District"] is None else raw_data['District'].unique().tolist().index(selected_district))
     selected_province = province_placeholder.selectbox("Province", [None] + raw_data['Province'].unique().tolist(), index=None if default_values["Province"] is None else raw_data['Province'].unique().tolist().index(selected_province))
-    latitude, longitude = raw_data[raw_data['PostalCode'] == selected_postal_code][['Latitude', 'Longitude']].median()
-    latitude_placeholder.number_input("Latitude", value=latitude)
-    longitude_placeholder.number_input("Longitude", value=longitude)
+    
+    # Fill latitude and longitude with median values
+    median_latitude, median_longitude = raw_data[raw_data['PostalCode'] == selected_postal_code][['Latitude', 'Longitude']].median()
+    latitude = latitude_placeholder.number_input("Latitude", value=median_latitude)
+    longitude = longitude_placeholder.number_input("Longitude", value=median_longitude)
+
 
 # Hide Property Subtype until Property Type is selected
 if default_values["PropertyType"] is not None:
