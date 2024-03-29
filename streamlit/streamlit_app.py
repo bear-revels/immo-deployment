@@ -69,9 +69,15 @@ if selected_postal_code:
     latitude_placeholder.number_input("Latitude", value=latitude)
     longitude_placeholder.number_input("Longitude", value=longitude)
 
-
 # Hide Property Subtype until Property Type is selected
-selected_property_type = st.selectbox("Property Type", [None] + property_types.tolist(), index=property_types.tolist().index(default_values["PropertyType"]))
+if default_values["PropertyType"] is not None:
+    selected_property_type_index = property_types.tolist().index(default_values["PropertyType"])
+    property_type_options = property_types.tolist()
+else:
+    selected_property_type_index = None
+    property_type_options = [None] + property_types.tolist()
+
+selected_property_type = st.selectbox("Property Type", property_type_options, index=selected_property_type_index)
 if selected_property_type:
     property_subtype_options = raw_data[raw_data['PropertyType'] == selected_property_type]['PropertySubType'].unique()
     selected_property_subtype = st.selectbox("Property Subtype", [None] + property_subtype_options.tolist(), index=property_subtype_options.tolist().index(default_values["PropertySubType"]))
