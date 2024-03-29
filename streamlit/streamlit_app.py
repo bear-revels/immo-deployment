@@ -47,32 +47,32 @@ default_values = {
 }
 
 # Create dropdown widgets
-selected_postal_code = st.selectbox("Postal Code", postal_codes, index=postal_codes.tolist().index(default_values["PostalCode"]))
-selected_region = st.selectbox("Region", regions, index=regions.tolist().index(default_values["Region"]))
-selected_district = st.selectbox("District", districts, index=districts.tolist().index(default_values["District"]))
-selected_province = st.selectbox("Province", provinces, index=provinces.tolist().index(default_values["Province"]))
-selected_property_type = st.selectbox("Property Type", property_types, index=property_types.tolist().index(default_values["PropertyType"]))
-selected_property_subtype = st.selectbox("Property Subtype", property_subtypes, index=property_subtypes.tolist().index(default_values["PropertySubType"]))
-selected_kitchen_type = st.selectbox("Kitchen Type", kitchen_types, index=kitchen_types.tolist().index(default_values["KitchenType"]))
-selected_condition = st.selectbox("Condition", conditions, index=conditions.tolist().index(default_values["Condition"]))
-selected_epc_score = st.selectbox("EPC Score", epc_scores, index=epc_scores.tolist().index(default_values["EPCScore"]))
+selected_postal_code = st.selectbox("Postal Code", postal_codes)
+selected_region = st.selectbox("Region", regions)
+selected_district = st.selectbox("District", districts)
+selected_province = st.selectbox("Province", provinces)
+selected_property_type = st.selectbox("Property Type", property_types)
+selected_property_subtype = st.selectbox("Property Subtype", property_subtypes)
+selected_kitchen_type = st.selectbox("Kitchen Type", kitchen_types)
+selected_condition = st.selectbox("Condition", conditions)
+selected_epc_score = st.selectbox("EPC Score", epc_scores)
 
 # Create sliders for numeric inputs
-bedroom_count = st.slider("Number of Bedrooms", min_value=raw_data['BedroomCount'].min(), max_value=raw_data['BedroomCount'].max(), value=default_values['BedroomCount'])
-living_area = st.slider("Living Area", min_value=raw_data['LivingArea'].min(), max_value=raw_data['LivingArea'].max(), value=default_values['LivingArea'])
-terrace_area = st.slider("Terrace Area", min_value=raw_data['TerraceArea'].min(), max_value=raw_data['TerraceArea'].max(), value=default_values['TerraceArea'])
-garden_area = st.slider("Garden Area", min_value=raw_data['GardenArea'].min(), max_value=raw_data['GardenArea'].max(), value=default_values['GardenArea'])
-facades = st.slider("Facades", min_value=raw_data['Facades'].min(), max_value=raw_data['Facades'].max(), value=default_values['Facades'])
-energy_consumption_per_sqm = st.slider("Energy Consumption Per Sqm", min_value=raw_data['EnergyConsumptionPerSqm'].min(), max_value=raw_data['EnergyConsumptionPerSqm'].max(), value=default_values['EnergyConsumptionPerSqm'])
-latitude = st.slider("Latitude", min_value=raw_data['Latitude'].min(), max_value=raw_data['Latitude'].max(), value=default_values['Latitude'])
-longitude = st.slider("Longitude", min_value=raw_data['Longitude'].min(), max_value=raw_data['Longitude'].max(), value=default_values['Longitude'])
+bedroom_count = st.slider("Number of Bedrooms", min_value=raw_data['BedroomCount'].min(), max_value=raw_data['BedroomCount'].max())
+living_area = st.slider("Living Area", min_value=raw_data['LivingArea'].min(), max_value=raw_data['LivingArea'].max())
+terrace_area = st.slider("Terrace Area", min_value=raw_data['TerraceArea'].min(), max_value=raw_data['TerraceArea'].max())
+garden_area = st.slider("Garden Area", min_value=raw_data['GardenArea'].min(), max_value=raw_data['GardenArea'].max())
+facades = st.slider("Facades", min_value=raw_data['Facades'].min(), max_value=raw_data['Facades'].max())
+energy_consumption_per_sqm = st.slider("Energy Consumption Per Sqm", min_value=raw_data['EnergyConsumptionPerSqm'].min(), max_value=raw_data['EnergyConsumptionPerSqm'].max())
+latitude = st.slider("Latitude", min_value=raw_data['Latitude'].min(), max_value=raw_data['Latitude'].max())
+longitude = st.slider("Longitude", min_value=raw_data['Longitude'].min(), max_value=raw_data['Longitude'].max())
 
 # Create toggle for binary inputs
-furnished = st.checkbox("Furnished", value=default_values['Furnished'])
-fireplace = st.checkbox("Fireplace", value=default_values['Fireplace'])
-terrace = st.checkbox("Terrace", value=default_values['Terrace'])
-garden = st.checkbox("Garden", value=default_values['Garden'])
-swimming_pool = st.checkbox("Swimming Pool", value=default_values['SwimmingPool'])
+furnished = st.checkbox("Furnished")
+fireplace = st.checkbox("Fireplace")
+terrace = st.checkbox("Terrace")
+garden = st.checkbox("Garden")
+swimming_pool = st.checkbox("Swimming Pool")
 
 # Button to submit values
 if st.button("Submit"):
