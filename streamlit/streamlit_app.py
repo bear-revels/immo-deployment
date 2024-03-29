@@ -19,21 +19,17 @@ kitchen_types = raw_data['KitchenType'].unique()
 conditions = raw_data['Condition'].unique()
 epc_scores = raw_data['EPCScore'].unique()
 
-# Create a mapping from postal code to region, district, and province
-postal_code_map = {code: (region, district, province) for code, region, district, province in zip(raw_data['PostalCode'], raw_data['Region'], raw_data['District'], raw_data['Province'])}
-
-# Create a mapping from epc score to energy consumption
-epc_energy_map = raw_data.groupby('EPCScore')['EnergyConsumptionPerSqm'].median().to_dict()
-
-
 # Default example house values
 default_values = {
-    "PostalCode": None,
-    "PropertyType": None,
-    "PropertySubType": None,
-    "BedroomCount": None,
-    "LivingArea": None,
-    "KitchenType": None,
+    "PostalCode": 9940,
+    "Region": "FLANDERS",
+    "District": "East Flanders",
+    "Province": "Gent",
+    "PropertyType": "House",
+    "PropertySubType": "House",
+    "BedroomCount": 3,
+    "LivingArea": 155,
+    "KitchenType": "Installed",
     "Furnished": 0,
     "Fireplace": 0,
     "Terrace": 0,
@@ -42,70 +38,40 @@ default_values = {
     "GardenArea": 0,
     "Facades": 0,
     "SwimmingPool": 0,
-    "EnergyConsumptionPerSqm": 0,
-    "Condition": None,
-    "EPCScore": None,
-    "Latitude": None,
-    "Longitude": None
+    "EnergyConsumptionPerSqm": 200,
+    "Condition": "Good",
+    "EPCScore": "B",
+    "Latitude": 51.1114671,
+    "Longitude": 3.6997650
 }
 
-# Placeholder elements for region, district, province, latitude, and longitude
-region_placeholder = st.empty()
-district_placeholder = st.empty()
-province_placeholder = st.empty()
-latitude_placeholder = st.empty()
-longitude_placeholder = st.empty()
-
 # Create dropdown widgets
-selected_postal_code = st.selectbox("Postal Code", [None] + postal_codes.tolist())
+selected_postal_code = st.selectbox("Postal Code", postal_codes)
+selected_region = st.selectbox("Region", regions)
+selected_district = st.selectbox("District", districts)
+selected_province = st.selectbox("Province", provinces)
+selected_property_type = st.selectbox("Property Type", property_types)
+selected_property_subtype = st.selectbox("Property Subtype", property_subtypes)
+selected_kitchen_type = st.selectbox("Kitchen Type", kitchen_types)
+selected_condition = st.selectbox("Condition", conditions)
+selected_epc_score = st.selectbox("EPC Score", epc_scores)
 
-# Show region, district, province, latitude, and longitude inputs once postal code is selected
-if selected_postal_code:
-    selected_region, selected_district, selected_province = postal_code_map[selected_postal_code]
-    selected_region = region_placeholder.selectbox("Region", [None] + raw_data['Region'].unique().tolist(), index=raw_data['Region'].unique().tolist().index(selected_region))
-    selected_district = district_placeholder.selectbox("District", [None] + raw_data['District'].unique().tolist(), index=raw_data['District'].unique().tolist().index(selected_district))
-    selected_province = province_placeholder.selectbox("Province", [None] + raw_data['Province'].unique().tolist(), index=raw_data['Province'].unique().tolist().index(selected_province))
-    latitude, longitude = raw_data[raw_data['PostalCode'] == selected_postal_code][['Latitude', 'Longitude']].median()
-    latitude_placeholder.number_input("Latitude", value=latitude)
-    longitude_placeholder.number_input("Longitude", value=longitude)
-
-# Hide Property Subtype until Property Type is selected
-if default_values["PropertyType"] is not None:
-    selected_property_type_index = property_types.tolist().index(default_values["PropertyType"])
-    property_type_options = property_types.tolist()
-else:
-    selected_property_type_index = None
-    property_type_options = [None] + property_types.tolist()
-
-selected_property_type = st.selectbox("Property Type", property_type_options, index=selected_property_type_index)
-if selected_property_type:
-    property_subtype_options = raw_data[raw_data['PropertyType'] == selected_property_type]['PropertySubType'].unique()
-    
-    if default_values["PropertySubType"] is not None and default_values["PropertySubType"] in property_subtype_options:
-        selected_property_subtype_index = property_subtype_options.tolist().index(default_values["PropertySubType"])
-    else:
-        selected_property_subtype_index = None
-    
-    selected_property_subtype = st.selectbox("Property Subtype", [None] + property_subtype_options.tolist(), index=selected_property_subtype_index)
-
-selected_kitchen_type = st.selectbox("Kitchen Type", [None] + kitchen_types.tolist(), index=kitchen_types.tolist().index(default_values["KitchenType"]))
-selected_condition = st.selectbox("Condition", [None] + conditions.tolist(), index=conditions.tolist().index(default_values["Condition"]))
-selected_epc_score = st.selectbox("EPC Score", [None] + epc_scores.tolist(), index=epc_scores.tolist().index(default_values["EPCScore"]))
-
-# Show Living Area if Number of Bedrooms is selected
-bedroom_count = st.slider("Number of Bedrooms", min_value=0, max_value=10, value=default_values['BedroomCount'])
-if bedroom_count is not None:
-    living_area = st.slider("Living Area", min_value=0, max_value=200, value=default_values['LivingArea'])
+# Create sliders for numeric inputs
+bedroom_count = st.slider("Number of Bedrooms", min_value=raw_data['BedroomCount'].min(), max_value=raw_data['BedroomCount'].max())
+living_area = st.slider("Living Area", min_value=raw_data['LivingArea'].min(), max_value=raw_data['LivingArea'].max())
+terrace_area = st.slider("Terrace Area", min_value=raw_data['TerraceArea'].min(), max_value=raw_data['TerraceArea'].max())
+garden_area = st.slider("Garden Area", min_value=raw_data['GardenArea'].min(), max_value=raw_data['GardenArea'].max())
+facades = st.slider("Facades", min_value=raw_data['Facades'].min(), max_value=raw_data['Facades'].max())
+energy_consumption_per_sqm = st.slider("Energy Consumption Per Sqm", min_value=raw_data['EnergyConsumptionPerSqm'].min(), max_value=raw_data['EnergyConsumptionPerSqm'].max())
+latitude = st.slider("Latitude", min_value=raw_data['Latitude'].min(), max_value=raw_data['Latitude'].max())
+longitude = st.slider("Longitude", min_value=raw_data['Longitude'].min(), max_value=raw_data['Longitude'].max())
 
 # Create toggle for binary inputs
-furnished = st.checkbox("Furnished", value=default_values['Furnished'])
-fireplace = st.checkbox("Fireplace", value=default_values['Fireplace'])
-swimming_pool = st.checkbox("Swimming Pool", value=default_values['SwimmingPool'])
-
-# Show terrace area slider if terrace checkbox is checked
-terrace = st.checkbox("Terrace", value=default_values['Terrace'])
-if terrace:
-    terrace_area = st.slider("Terrace Area", min_value=0, max_value=200, value=default_values['TerraceArea'])
+furnished = st.checkbox("Furnished")
+fireplace = st.checkbox("Fireplace")
+terrace = st.checkbox("Terrace")
+garden = st.checkbox("Garden")
+swimming_pool = st.checkbox("Swimming Pool")
 
 # Show garden area slider if garden checkbox is checked
 garden = st.checkbox("Garden", value=default_values['Garden'])
@@ -132,10 +98,12 @@ if st.button("Submit"):
         "Furnished": furnished,
         "Fireplace": fireplace,
         "Terrace": terrace,
-        "TerraceArea": terrace_area if terrace else default_values['TerraceArea'],  # Include terrace_area if terrace is checked
+        "TerraceArea": terrace_area,
         "Garden": garden,
-        "GardenArea": garden_area if garden else default_values['GardenArea'],  # Include garden_area if garden is checked
+        "GardenArea": garden_area,
+        "Facades": facades,
         "SwimmingPool": swimming_pool,
+        "EnergyConsumptionPerSqm": energy_consumption_per_sqm,
         "Condition": selected_condition,
         "EnergyConsumptionPerSqm": selected_energy_consumption if selected_epc_score else default_values['EnergyConsumptionPerSqm'],  # Include energy_consumption if epc score is selected
         "EPCScore": selected_epc_score,
