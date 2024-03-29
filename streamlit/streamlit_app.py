@@ -22,6 +22,9 @@ epc_scores = raw_data['EPCScore'].unique()
 # Create a mapping from postal code to region, district, and province
 postal_code_map = {code: (region, district, province) for code, region, district, province in zip(raw_data['PostalCode'], raw_data['Region'], raw_data['District'], raw_data['Province'])}
 
+# Preprocess the 'EPCScore' column
+raw_data['EPCScore'] = raw_data['EPCScore'].str.split('_').str[0]
+
 # Create a mapping from epc score to energy consumption
 epc_energy_map = raw_data.groupby('EPCScore')['EnergyConsumptionPerSqm'].median().to_dict()
 
@@ -72,29 +75,21 @@ if selected_postal_code:
     latitude = latitude_placeholder.number_input("Latitude", value=median_latitude)
     longitude = longitude_placeholder.number_input("Longitude", value=median_longitude)
 
-
 # Hide Property Subtype until Property Type is selected
-if default_values["PropertyType"] is not None:
-    selected_property_type_index = property_types.tolist().index(default_values["PropertyType"])
-    property_type_options = property_types.tolist()
-else:
-    selected_property_type_index = None
-    property_type_options = [None] + property_types.tolist()
-
-selected_property_type = st.selectbox("Property Type", property_type_options, index=selected_property_type_index)
+selected_property_type = st.selectbox("Property Type", [None] + property_types.tolist(), index=None if default_values["PropertyType"] is None else property_types.tolist().index(default_values["PropertyType"]))
 if selected_property_type:
     property_subtype_options = raw_data[raw_data['PropertyType'] == selected_property_type]['PropertySubType'].unique()
-    
-    if default_values["PropertySubType"] is not None and default_values["PropertySubType"] in property_subtype_options:
-        selected_property_subtype_index = property_subtype_options.tolist().index(default_values["PropertySubType"])
-    else:
-        selected_property_subtype_index = None
-    
-    selected_property_subtype = st.selectbox("Property Subtype", [None] + property_subtype_options.tolist(), index=selected_property_subtype_index)
+    selected_property_subtype = st.selectbox("Property Subtype", [None] + property_subtype_options.tolist(), index=None if default_values["PropertySubType"] is None else property_subtype_options.tolist().index(default_values["PropertySubType"]))
 
 selected_kitchen_type = st.selectbox("Kitchen Type", kitchen_types.tolist(), index=None if default_values["KitchenType"] is None else kitchen_types.tolist().index(default_values["KitchenType"]))
 selected_condition = st.selectbox("Condition", conditions.tolist(), index=None if default_values["Condition"] is None else conditions.tolist().index(default_values["Condition"]))
+
+# Show Energy Consumption if EPC Score is selected
 selected_epc_score = st.selectbox("EPC Score", epc_scores.tolist(), index=None if default_values["EPCScore"] is None else epc_scores.tolist().index(default_values["EPCScore"]))
+if selected_epc_score:
+    selected_energy_consumption = st.slider("Energy Consumption (kW/sqm)", min_value=-200, max_value=1000, 
+                                            value=default_values.get("EnergyConsumptionPerSqm", 
+                                                                     epc_energy_map.get(selected_epc_score, 0)))
 
 # Show Living Area if Number of Bedrooms is selected
 bedroom_count = st.slider("Number of Bedrooms", min_value=0, max_value=10, value=default_values['BedroomCount'])
@@ -115,10 +110,6 @@ if terrace:
 garden = st.checkbox("Garden", value=default_values['Garden'])
 if garden:
     garden_area = st.slider("Garden Area", min_value=0, max_value=200, value=default_values['GardenArea'])
-
-# Show Energy Consumption if EPC Score is selected
-if selected_epc_score:
-    selected_energy_consumption = st.slider("Energy Consumption (kW/sqm)", min_value=-200, max_value=1000, value=epc_energy_map[selected_epc_score])
 
 # Button to submit values
 if st.button("Submit"):
@@ -155,3 +146,5 @@ if st.button("Submit"):
         st.success(f'Predicted Price: €{prediction}')
     else:
         st.error('Error occurred. Please try again.')
+
+print(epc_energy_map)
